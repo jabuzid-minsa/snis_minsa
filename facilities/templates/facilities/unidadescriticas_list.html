@@ -1,0 +1,281 @@
+{% extends 'facilities/base.html' %}
+{% load form_tags %}
+
+{% block title %}Listado de Reportes{% endblock %}
+
+{% block scripts %}
+
+{{ form.media }}
+
+<style>
+    .col-table {
+      padding-left: 14px !important;
+      padding-right: 14px !important;
+    }
+
+
+  .select2-container {
+    width: 100% !important;
+  }
+
+  span.select2-selection{
+      height: calc(1.5em + .75rem + 2px) !important;
+  } 
+
+  </style>
+
+<script>
+  $(function () {
+    $(".datetimepicker").datetimepicker({
+      format: 'Y-m-d',
+      timepicker:false,
+    });
+
+
+    $("#download").click(function(){
+      var url = "{% url 'facilities:export_xls' %}";
+      var id_instalacion = $("#instalacion").val();
+      var reg_date = $("#id_reg_date").val();
+      var id_status = $("#id_status").val();
+      $.ajax({                    
+                        url: url,
+                        data: {
+                        'id_instalacion': id_instalacion,
+                        'reg_date':reg_date,
+                        'id_status': id_status
+                        },
+                        method: 'GET',
+                        xhrFields: {
+                            responseType: 'blob'
+                        },
+                        success: function (data) {
+                          var a = document.createElement('a');
+                          var url = window.URL.createObjectURL(data);
+                          a.href = url;
+                          a.download = 'reportes-covid.xls';
+                          document.body.append(a);
+                          a.click();
+                          a.remove();
+                          window.URL.revokeObjectURL(url);
+                        },
+                        error: function (jqXHR, textStatus, errorThrown){
+                            alert('Error en la descarga');
+                        }
+            });
+    });
+
+  });
+
+  
+
+</script>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+
+<h1 class="mt-5">Listado de Reportes</h1>
+
+
+<form class="my-3" action="{% url 'facilities:uc-list'%}" method="get">
+    {% csrf_token %}
+  
+    <div class="row mb-5">      
+      <div class="col-md-4">
+        {{form.instalacion.label_tag}}
+        <div>
+        {{form.instalacion}}
+        </div>
+        <div class="invalid-feedback">
+          {{form.instalacion.errors}}
+        </div>
+      </div>
+    
+      <div class="col-md-3">
+        {{form.reg_date.label_tag}}
+        {{form.reg_date}}
+        <div class="invalid-feedback">
+          {{form.reg_date.errors}}
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        {{form.status.label_tag}}
+        {{form.status}}
+        <div class="invalid-feedback">
+          {{form.status.errors}}
+        </div>
+      </div>
+
+      <div class="col-md-1 d-flex mt-2 align-items-end">
+        <input class="btn btn-primary" type="submit" value="Filtrar" />
+      </div>
+      <div class="col-md-1 d-flex mt-2 align-items-end">
+        <a class="btn btn-primary" href="{% url 'facilities:uc-list' %}">Limpiar</a>
+      </div>
+    </div>
+    <div class="mb-4">
+      <a id="download" href="javascript:void(0)">Descargar Excel: Listado de Reportes</a>
+    </div>
+</form>
+
+
+<div class="table-responsive">
+    <table class="table table-hover table-sm" style="white-space:nowrap;">
+        <thead>
+            <tr>
+              <th class="col-table" scope="col"></th>
+              <th class="col-table" scope="col">Instalación</th>
+              <th class="col-table" scope="col">Fecha de Registro</th>
+              <th class="col-table" scope="col">Aprobado</th>
+              <th class="col-table" scope="col">Camas UCI</th>
+              <th class="col-table" scope="col">Camas semi intensivos</th>
+              <th class="col-table" scope="col">Camas en sala</th>
+              <th class="col-table" scope="col">Camas ocupadas por COVID-19</th>
+              <th class="col-table" scope="col">Camas COVID-19 en sala</th>
+              <th class="col-table" scope="col">Camas otras causas</th>
+              <th class="col-table" scope="col">Camas otras causas en sala</th>
+
+              <th class="col-table" scope="col">Ventiladores disponibles</th>
+              <th class="col-table" scope="col">Trasporte</th>
+              <th class="col-table" scope="col">Fijo</th>
+              <th class="col-table" scope="col">Pacientes con COVID-19 con VMA</th>
+              <th class="col-table" scope="col">Trasporte</th>
+              <th class="col-table" scope="col">Fijo</th>
+              <th class="col-table" scope="col">Pacientes con COVID-19 con VMA en sala</th>
+              <th class="col-table" scope="col">Trasporte</th>
+              <th class="col-table" scope="col">Fijo</th>
+              <th class="col-table" scope="col">Ventiladores ocupados con otras patologías</th>
+              <th class="col-table" scope="col">Trasporte</th>
+              <th class="col-table" scope="col">Fijo</th>
+
+              <th class="col-table" scope="col">Pacientes con COVID-19 con intubacion</th>
+              <th class="col-table" scope="col">Pacientes con COVID-19 que fueron extubados</th>
+              <th class="col-table" scope="col">Pacientes trasladados de UCI a sala</th>
+              <th class="col-table" scope="col">Defunciones por COVID-19</th>
+              <th class="col-table" scope="col">Intensivistas Totales</th>
+              <th class="col-table" scope="col">Disponibles</th>
+              <th class="col-table" scope="col">Internistas Totales</th>
+              <th class="col-table" scope="col">Disponibles</th>
+              <th class="col-table" scope="col">Infectólogo Totales</th>
+              <th class="col-table" scope="col">Disponibles</th>
+              <th class="col-table" scope="col">Anestesiólogos Totales</th>
+              <th class="col-table" scope="col">Disponibles</th>
+              <th class="col-table" scope="col">Neumólogos Totales</th>
+              <th class="col-table" scope="col">Disponibles</th>
+              <th class="col-table" scope="col">Cirujanos Totales</th>
+              <th class="col-table" scope="col">Disponibles</th>
+              <th class="col-table" scope="col">Enfermeros Totales</th>
+              <th class="col-table" scope="col">Disponibles</th>
+              <th class="col-table" scope="col">Técnicos/Auxiliares Enfermería Totales</th>
+              <th class="col-table" scope="col">Disponibles</th>
+              <th class="col-table" scope="col">Terapistas Respiratorios</th>
+              <th class="col-table" scope="col">Disponibles</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            {% for uc in ucl %}
+                <tr>
+                  <td class="col-table">
+                    <span class="table-remove">
+                        <a class="btn btn-primary btn-rounded btn-sm my-0" href="{% url 'facilities:uc-update' uc.id %}"> Editar</a>
+                    </span>
+                </td>
+                    <th class="col-table" scope="row"><a href="{% url 'facilities:uc-detail' uc.id %}" >{{uc.instalacion }}</a> </th>
+                    <td class="col-table" >{{uc.reg_date|date:'d-F-Y'}}</td>
+                    <td class="col-table" >  
+                        {% if uc.aprobado %}
+                        <i class="fa fa-check"></i>
+                        {% else %}
+                        <i class="far fa-edit"></i>
+                        {% endif %}
+                    </td>
+                    <td class="col-table">{{uc.camas_uci|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.camas_semi|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.camas_sala|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.camas_covid|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.camas_covid_sala|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.camas_otro|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.camas_otro_sala|default_if_none:"-"}}</td>
+
+                    <td class="col-table">{{uc.vent_dispo|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.vent_dispo_trans|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.vent_dispo_fijo|default_if_none:"-"}}</td>
+
+                    <td class="col-table">{{uc.pacientes_vma|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.pacientes_vma_trans|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.pacientes_vma_fijo|default_if_none:"-"}}</td>
+
+                    <td class="col-table">{{uc.pacientes_vma_sala|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.pacientes_vma_sala_trans|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.pacientes_vma_sala_fijo|default_if_none:"-"}}</td>
+
+                    <td class="col-table">{{uc.vent_otro|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.vent_otro_trans|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.vent_otro_fijo|default_if_none:"-"}}</td>
+
+                    <td class="col-table">{{uc.pacientes_covid_int|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.pacientes_covid_ext|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.pacientes_traslado|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.defunciones_covid|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.intensivistas|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.intensivistas_dispo|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.internistas|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.internistas_dispo|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.infectologos|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.infectologos_dispo|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.anestesiologos|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.anestesiologos_dispo|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.neumologos|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.neumologos_dispo|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.cirujanos|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.cirujanos_dispo|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.enfermeros|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.enfermeros_dispo|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.tecnicos|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.tecnicos_dispo|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.terapistas_resp|default_if_none:"-"}}</td>
+                    <td class="col-table">{{uc.terapistas_resp_dispo|default_if_none:"-"}}</td>
+                </tr>
+            {% endfor %}
+
+          </tbody>
+
+    </table>
+</div>
+
+{% if is_paginated %}
+<nav>
+    <ul class= "pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">     
+            <a class="page-link" href="?{% param_replace page=page_obj.previous_page_number %}">Anterior</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">     
+            <a class="page-link">Anterior</a>
+        </li>
+        {% endif %}   
+
+
+        <li class="page-item">     
+            <a class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</a>
+        </li>
+
+
+        {% if page_obj.has_next %}
+        <li class="page-item">     
+            <a class="page-link" href="?{% param_replace page=page_obj.next_page_number %}">Siguiente</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">     
+            <a class="page-link">Siguiente</a>
+        </li>
+        {% endif %} 
+    </ul>
+</nav>
+{% endif %}
+</div>
+{% endblock %}

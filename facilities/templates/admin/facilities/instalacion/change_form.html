@@ -1,0 +1,326 @@
+{% extends "admin/change_form.html" %}
+
+{% block submit_buttons_bottom %}
+{{ block.super }}
+
+{% if change_view is True %}
+
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    /* The Modal (background) */
+    .modal {
+        display: none;
+        /* Hidden by default */
+        position: fixed;
+        /* Stay in place */
+        z-index: 1;
+        /* Sit on top */
+        padding-top: 100px;
+        /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%;
+        /* Full width */
+        height: 100%;
+        /* Full height */
+        overflow: auto;
+        /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0);
+        /* Fallback color */
+        background-color: rgba(0, 0, 0, 0.4);
+        /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        position: relative;
+        background-color: #fefefe;
+        margin: auto;
+        padding: 0;
+        border: 1px solid #888;
+        width: 80%;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        -webkit-animation-name: animatetop;
+        -webkit-animation-duration: 0.4s;
+        animation-name: animatetop;
+        animation-duration: 0.4s
+    }
+
+    /* Add Animation */
+    @-webkit-keyframes animatetop {
+        from {
+            top: -300px;
+            opacity: 0
+        }
+
+        to {
+            top: 0;
+            opacity: 1
+        }
+    }
+
+    @keyframes animatetop {
+        from {
+            top: -300px;
+            opacity: 0
+        }
+
+        to {
+            top: 0;
+            opacity: 1
+        }
+    }
+
+    /* The Close Button */
+    .close {
+        color: white;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .modal-header {
+        padding: 2px 16px;
+        background-color: #5cb85c;
+        color: white;
+    }
+
+    .modal-body {
+        padding: 2px 16px;
+    }
+
+    .modal-footer {
+        padding: 2px 16px;
+        background-color: #5cb85c;
+        color: white;
+    }
+
+    .module-poblados {
+        padding-top: 60px;
+    }
+</style>
+
+
+<div class="module-poblados">
+<h1>Asociar Poblado</h1>
+
+<form action="potical-division" method="post">
+
+    <div class="submit-row">
+        <p class="deletelink-box">
+            Provincia: <select name="provincia" id="provincia">
+                <option value="">-----------</option>
+                {% for provincia in provincia_list %}
+                <option value="{{ provincia.pk }}">{{ provincia.provincia }}</option>
+                {% endfor %}
+            </select>
+
+
+            Región: <select name="region" id="region" disabled="true">
+                <option>-----------</option>
+            </select>
+
+            Distrito: <select name="distrito" id="distrito" disabled="true">
+                <option>-----------</option>
+            </select>
+
+            Corregimiento: <select name="corregimiento" id="corregimiento" disabled="true">
+                <option>-----------</option>
+            </select>
+
+            Poblado: <select name="poblado" id="poblado" disabled="true">
+                <option>-----------</option>
+            </select>
+        </p>
+        <input type="submit" value="Agregar poblado" name="_add-poblado">
+    </div>
+</form>
+
+</div>
+
+
+<div class="container">
+    {% for poblado in poblado_list %}
+    {{poblado.poblado}} <a href="#" class="confirm-delete" data-id="{{poblado.id}}">remover</a><br>
+    {% endfor %}
+</div>
+
+<div id="myModal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close">&times;</span>
+            <h2>Remover asociación</h2>
+        </div>
+        <div class="modal-body">
+            <p>¿Desea remover el poblado asociado?</p>
+            <input type="button" id="cancelButton" value="Cancelar">
+            <input type="button" id="deleteButton" value="Remover">
+        </div>
+    </div>
+
+</div>
+
+<script>
+    (function ($) {
+
+        $("select#provincia").change(function () {
+            if ($(this).val() == '') {
+                $("select#region").html("<option>-----------</option>");
+                $("select#region").attr('disabled', true);
+
+                $("select#distrito").html("<option>-----------</option>");
+                $("select#distrito").attr('disabled', true);
+
+                $("select#corregimiento").html("<option>-----------</option>");
+                $("select#corregimiento").attr('disabled', true);
+
+                $("select#poblado").html("<option>-----------</option>");
+                $("select#poblado").attr('disabled', true);
+
+            }
+            else {
+                var url = "/political/regions/" + $(this).val();
+                $.getJSON(url, function (regions) {
+                    var options = '<option value="">-----------</option>';
+                    for (var i = 0; i < regions.length; i++) {
+                        options += '<option value="' + regions[i].pk + '">' + regions[i].fields['region'] + '</option>';
+                    }
+                    $("select#region").html(options);
+                    $("select#region option:first").attr('selected', 'selected');
+                    $("select#region").attr('disabled', false);
+                });
+            }
+        });
+
+        $("select#region").change(function () {
+            if ($(this).val() == '') {
+                $("select#distrito").html("<option>-----------</option>");
+                $("select#distrito").attr('disabled', true);
+
+                $("select#corregimiento").html("<option>-----------</option>");
+                $("select#corregimiento").attr('disabled', true);
+
+                $("select#poblado").html("<option>-----------</option>");
+                $("select#poblado").attr('disabled', true);
+            }
+            else {
+                var url = "/political/distritos/" + $(this).val();
+                $.getJSON(url, function (distritos) {
+                    var options = '<option value="">-----------</option>';
+                    for (var i = 0; i < distritos.length; i++) {
+                        options += '<option value="' + distritos[i].pk + '">' + distritos[i].fields['distrito'] + '</option>';
+                    }
+                    $("select#distrito").html(options);
+                    $("select#distrito option:first").attr('selected', 'selected');
+                    $("select#distrito").attr('disabled', false);
+                });
+            }
+        });
+
+        $("select#distrito").change(function () {
+            if ($(this).val() == '') {
+                $("select#corregimiento").html("<option>-----------</option>");
+                $("select#corregimiento").attr('disabled', true);
+
+                $("select#poblado").html("<option>-----------</option>");
+                $("select#poblado").attr('disabled', true);
+            }
+            else {
+                var url = "/political/corregimientos/" + $(this).val();
+                $.getJSON(url, function (corregimientos) {
+                    var options = '<option value="">-----------</option>';
+                    for (var i = 0; i < corregimientos.length; i++) {
+                        options += '<option value="' + corregimientos[i].pk + '">' + corregimientos[i].fields['corregimiento'] + '</option>';
+                    }
+                    $("select#corregimiento").html(options);
+                    $("select#corregimiento option:first").attr('selected', 'selected');
+                    $("select#corregimiento").attr('disabled', false);
+                });
+            }
+        });
+
+        $("select#corregimiento").change(function () {
+            if ($(this).val() == '') {
+                $("select#poblado").html("<option>-----------</option>");
+                $("select#poblado").attr('disabled', true);
+            }
+            else {
+                var url = "/political/poblados/" + $(this).val();
+                $.getJSON(url, function (poblados) {
+                    var options = '<option value="">-----------</option>';
+                    for (var i = 0; i < poblados.length; i++) {
+                        options += '<option value="' + poblados[i].pk + '">' + poblados[i].fields['poblado'] + '</option>';
+                    }
+                    $("select#poblado").html(options);
+                    $("select#poblado option:first").attr('selected', 'selected');
+                    $("select#poblado").attr('disabled', false);
+                });
+            }
+        });
+
+        $("select#poblado").change(function () {
+        });
+
+        $('.confirm-delete').on('click', function (e) {
+            e.preventDefault();
+            var id = $(this).data('id');
+            modal.style.display = "block";
+            $('#deleteButton').data('id', id)
+        });
+
+        $('#deleteButton').on('click', function (e) {
+            e.preventDefault();
+            var poblado_id = $(this).data('id');
+            var url = "/political/delete_instalacion_poblado/{{instalacion_id}}/" + poblado_id;
+            $.getJSON(url, function (response) {
+                alert("Poblado removido exitosamente" );
+                location.reload();
+            }).fail(function (e) {
+                modal.style.display = "none";
+                alert("Error al remover poblado, contácte al administrador." );
+            });
+
+        });
+
+        $('#cancelButton').on('click', function (e) {
+            e.preventDefault();
+            modal.style.display = "none";
+        });
+    })(django.jQuery);
+
+
+
+    var modal = document.getElementById("myModal");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+</script>
+
+{% endif %}
+
+{% endblock %}

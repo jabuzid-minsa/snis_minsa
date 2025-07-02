@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load form_tags %}
+
+{% block body %}
+
+<div class="row">
+  <aside class="col-sm-4">
+  </aside> <!-- col.// -->
+  <aside class="col-sm-4">
+  <div class="row justify-content-center">
+  <h2 class="mt-5" >Inicio de sesión</h2>
+  <div class="card">
+  <article class="card-body">
+  <form method="post">
+    {% csrf_token %}
+
+    {% if form.errors %}
+    <div class="row alert alert-danger" role="alert">
+      <ul>
+        {% for error in form.non_field_errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <div class="row justify-content-center">
+          {{ form.username.label_tag }}
+          {{ form.username | addclass:"form-control"}}
+
+          {{ form.password.label_tag }}
+          {{ form.password | addclass:"form-control"}}
+      
+      <input class="btn btn-primary btn-rounded my-3" type="submit" value="Login">
+      <input type="hidden" name="next" value="{{ next }}">
+    </div>
+    <div class="row justify-content-center">
+      <a href="{% url 'password_reset' %}">¿Has olvidado la contraseña?</a>
+    </div>
+    <div class="row justify-content-center mt-1">
+      <a href="/">Regresar a la página principal</a>
+    </div>
+  </form>
+  </article>
+  </div>
+</div>
+  </aside>
+  <aside class="col-sm-4">
+  </aside> <!-- col.// -->
+  </div>
+
+{% endblock %}

@@ -1,0 +1,652 @@
+{% block scripts %}
+
+{{ form.media }}
+
+<style>
+
+  .select2-container {
+    width: 100% !important;
+  }
+
+  span.select2-selection{
+    height: calc(1.5em + .75rem + 2px) !important;
+  } 
+
+</style>
+
+<script>
+  $(function () {
+    $(".datetimepicker").datetimepicker({
+      format: 'Y-m-d H:i:s',
+    });
+  });
+
+
+  $(function () {
+    $('[data-toggle="popover"]').popover()
+  });
+
+
+  $('.popover-dismiss').popover({
+    trigger: 'focus'
+  })
+
+</script>
+
+{% endblock %}
+
+
+
+{% if form.non_field_errors %}
+<div class="alert alert-danger" role="alert">
+  <ul>
+    {% for error in form.non_field_errors %}
+    <li>{{ error }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+
+{%if user.role == "coordinador" or user.is_superuser %}
+    <div class="alert alert-primary mb-5 mt-4" role="alert">
+      <div class="form-check">
+        {{form.aprobado.label_tag}}
+        {{form.aprobado}}
+      </div>
+    </div>
+{% endif %}
+
+
+<div class="row mb-5">
+  <div class="col-md-6 mb-3">
+
+    {{form.instalacion.label_tag}}
+    <div >
+      {{form.instalacion}}
+    </div>
+    <div class="invalid-feedback">
+      {{form.instalacion.errors}}
+    </div>
+  </div>
+
+  <div class="col-md-6 mb-3">
+    {{form.reg_date.label_tag}}
+    {{form.reg_date}}
+    <div class="invalid-feedback">
+      {{form.reg_date.errors}}
+    </div>
+  </div>
+</div>
+
+<hr class="mb-1">
+<h4 class="mb-4">CAMAS</h4>
+
+
+<div class="row">
+  <div class="col-md-5 mb-3">
+    {{form.camas_uci.label_tag}}
+    {% if form.camas_uci.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.camas_uci.help_text|safe }}"></i>
+    {% endif %}
+    {{form.camas_uci}}
+    <div class="invalid-feedback">
+      {{form.camas_uci.errors}}
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-md-5 mb-3">
+    {{form.camas_semi.label_tag}}
+    {% if form.camas_semi.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.camas_semi.help_text|safe }}"></i>
+    {% endif %}
+    {{form.camas_semi}}
+    <div class="invalid-feedback">
+      {{form.camas_semi.errors}}
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-md-5 mb-3">
+    {{form.camas_sala.label_tag}}
+    {% if form.camas_sala.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.camas_sala.help_text|safe }}"></i>
+    {% endif %}
+    {{form.camas_sala}}
+    <div class="invalid-feedback">
+      {{form.camas_sala.errors}}
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-5 mb-3">
+    {{form.camas_covid.label_tag}}
+    {% if form.camas_covid.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.camas_covid.help_text|safe }}"></i>
+    {% endif %}
+    {{form.camas_covid}}
+    <div class="invalid-feedback">
+      {{form.camas_covid.errors}}
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-5 mb-3">
+    {{form.camas_covid_sala.label_tag}}
+    {% if form.camas_covid_sala.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.camas_covid_sala.help_text|safe }}"></i>
+    {% endif %}
+    {{form.camas_covid_sala}}
+    <div class="invalid-feedback">
+      {{form.camas_covid_sala.errors}}
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-md-5 mb-3">
+    {{form.camas_otro.label_tag}}
+    {% if form.camas_otro.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.camas_otro.help_text|safe }}"></i>
+    {% endif %}
+    {{form.camas_otro}}
+    <div class="invalid-feedback">
+      {{form.camas_otro.errors}}
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-md-5 mb-3">
+    {{form.camas_otro_sala.label_tag}}
+    {% if form.camas_otro_sala.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.camas_otro_sala.help_text|safe }}"></i>
+    {% endif %}
+    {{form.camas_otro_sala}}
+    <div class="invalid-feedback">
+      {{form.camas_otro_sala.errors}}
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-5 mb-3">
+    {{form.vent_dispo.label_tag}}
+    {% if form.vent_dispo.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.vent_dispo.help_text|safe }}"></i>
+    {% endif %}
+    {{form.vent_dispo}}
+    <div class="invalid-feedback">
+      {{form.vent_dispo.errors}}
+    </div>
+  </div>
+
+  <div class="col-md-2 mb-3">
+    {{form.vent_dispo_trans.label_tag}}
+    {{form.vent_dispo_trans}}
+    <div class="invalid-feedback">
+      {{form.vent_dispo_trans.errors}}
+    </div>
+  </div>
+
+  <div class="col-md-2 mb-3">
+    {{form.vent_dispo_fijo.label_tag}}
+    {{form.vent_dispo_fijo}}
+    <div class="invalid-feedback">
+      {{form.vent_dispo_fijo.errors}}
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-md-5 mb-3">
+    {{form.pacientes_vma.label_tag}}
+    {% if form.pacientes_vma.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.pacientes_vma.help_text|safe }}"></i>
+    {% endif %}
+    {{form.pacientes_vma}}
+    <div class="invalid-feedback">
+      {{form.pacientes_vma.errors}}
+    </div>
+  </div>
+  <div class="col-md-2 mb-3">
+    {{form.pacientes_vma_trans.label_tag}}
+    {{form.pacientes_vma_trans}}
+    <div class="invalid-feedback">
+      {{form.pacientes_vma_trans.errors}}
+    </div>
+  </div>
+
+  <div class="col-md-2 mb-3">
+    {{form.pacientes_vma_fijo.label_tag}}
+    {{form.pacientes_vma_fijo}}
+    <div class="invalid-feedback">
+      {{form.pacientes_vma_fijo.errors}}
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-5 mb-3">
+    {{form.pacientes_vma_semi.label_tag}}
+    {% if form.pacientes_vma_semi.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.pacientes_vma.help_text|safe }}"></i>
+    {% endif %}
+    {{form.pacientes_vma_semi}}
+    <div class="invalid-feedback">
+      {{form.pacientes_vma_semi.errors}}
+    </div>
+  </div>
+  <div class="col-md-2 mb-3">
+    {{form.pacientes_vma_semi_trans.label_tag}}
+    {{form.pacientes_vma_semi_trans}}
+    <div class="invalid-feedback">
+      {{form.pacientes_vma_trans.errors}}
+    </div>
+  </div>
+
+  <div class="col-md-2 mb-3">
+    {{form.pacientes_vma_semi_fijo.label_tag}}
+    {{form.pacientes_vma_semi_fijo}}
+    <div class="invalid-feedback">
+      {{form.pacientes_vma_semi_fijo.errors}}
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-5 mb-3">
+    {{form.pacientes_vma_sala.label_tag}}
+    {% if form.pacientes_vma_sala.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.pacientes_vma_sala.help_text|safe }}"></i>
+    {% endif %}
+    {{form.pacientes_vma_sala}}
+    <div class="invalid-feedback">
+      {{form.pacientes_vma_sala.errors}}
+    </div>
+  </div>
+  <div class="col-md-2 mb-3">
+    {{form.pacientes_vma_sala_trans.label_tag}}
+    {{form.pacientes_vma_sala_trans}}
+    <div class="invalid-feedback">
+      {{form.pacientes_vma_sala_trans.errors}}
+    </div>
+  </div>
+
+  <div class="col-md-2 mb-3">
+    {{form.pacientes_vma_sala_fijo.label_tag}}
+    {{form.pacientes_vma_sala_fijo}}
+    <div class="invalid-feedback">
+      {{form.pacientes_vma_sala_fijo.errors}}
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-md-5 mb-3">
+    {{form.vent_otro.label_tag}}
+    {% if form.vent_otro.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.vent_otro.help_text|safe }}"></i>
+    {% endif %}
+    {{form.vent_otro}}
+    <div class="invalid-feedback">
+      {{form.vent_otro.errors}}
+    </div>
+  </div>
+  <div class="col-md-2 mb-3">
+    {{form.vent_otro_trans.label_tag}}
+    {{form.vent_otro_trans}}
+    <div class="invalid-feedback">
+      {{form.vent_otro_trans.errors}}
+    </div>
+  </div>
+
+  <div class="col-md-2 mb-3">
+    {{form.vent_otro_fijo.label_tag}}
+    {{form.vent_otro_fijo}}
+    <div class="invalid-feedback">
+      {{form.vent_otro_fijo.errors}}
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-5 mb-3">
+    {{form.pacientes_covid_int.label_tag}}
+    {% if form.pacientes_covid_int.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.pacientes_covid_int.help_text|safe }}"></i>
+    {% endif %}
+    {{form.pacientes_covid_int}}
+    <div class="invalid-feedback">
+      {{form.pacientes_covid_int.errors}}
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-md-5 mb-3">
+    {{form.pacientes_covid_ext.label_tag}}
+    {% if form.pacientes_covid_ext.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.pacientes_covid_ext.help_text|safe }}"></i>
+    {% endif %}
+    {{form.pacientes_covid_ext}}
+    <div class="invalid-feedback">
+      {{form.pacientes_covid_ext.errors}}
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-5 mb-3">
+    {{form.pacientes_traslado.label_tag}}
+    {% if form.pacientes_traslado.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.pacientes_traslado.help_text|safe }}"></i>
+    {% endif %}
+    {{form.pacientes_traslado}}
+    <div class="invalid-feedback">
+      {{form.pacientes_traslado.errors}}
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-5 mb-3">
+    {{form.defunciones_covid.label_tag}}
+    {% if form.defunciones_covid.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.defunciones_covid.help_text|safe }}"></i>
+    {% endif %}
+    {{form.defunciones_covid}}
+    <div class="invalid-feedback">
+      {{form.defunciones_covid.errors}}
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-5 mb-3">
+    {{form.observaciones_camas.label_tag}}
+    {{form.observaciones_camas}}
+  </div>
+</div>
+
+
+<hr class="mb-1">
+<h4 class="mb-4">RECURSOS HUMANOS</h4>
+
+
+
+<div class="row">
+  <div class="col-md-4 mb-3">
+    {{form.intensivistas.label_tag}}
+    {% if form.intensivistas.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.intensivistas.help_text|safe }}"></i>
+    {% endif %}
+    {{form.intensivistas}}
+    <div class="invalid-feedback">
+      {{form.intensivistas.errors}}
+    </div>
+  </div>
+
+  <div class="col-md-2 mb-3">
+    {{form.intensivistas_dispo.label_tag}}
+    {% if form.intensivistas_dispo.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.intensivistas_dispo.help_text|safe }}"></i>
+    {% endif %}
+    {{form.intensivistas_dispo}}
+    <div class="invalid-feedback">
+      {{form.intensivistas_dispo.errors}}
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-md-4 mb-3">
+    {{form.internistas.label_tag}}
+    {% if form.internistas.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.internistas.help_text|safe }}"></i>
+    {% endif %}
+    {{form.internistas}}
+    <div class="invalid-feedback">
+      {{form.internistas.errors}}
+    </div>
+  </div>
+
+  <div class="col-md-2 mb-3">
+    {{form.internistas_dispo.label_tag}}
+    {% if form.internistas_dispo.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.internistas_dispo.help_text|safe }}"></i>
+    {% endif %}
+    {{form.internistas_dispo}}
+    <div class="invalid-feedback">
+      {{form.internistas_dispo.errors}}
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-md-4 mb-3">
+    {{form.infectologos.label_tag}}
+    {% if form.infectologos.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.infectologos.help_text|safe }}"></i>
+    {% endif %}
+    {{form.infectologos}}
+    <div class="invalid-feedback">
+      {{form.infectologos.errors}}
+    </div>
+  </div>
+
+  <div class="col-md-2 mb-3">
+    {{form.infectologos_dispo.label_tag}}
+    {% if form.infectologos_dispo.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.infectologos_dispo.help_text|safe }}"></i>
+    {% endif %}
+    {{form.infectologos_dispo}}
+    <div class="invalid-feedback">
+      {{form.infectologos_dispo.errors}}
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-md-4 mb-3">
+    {{form.anestesiologos.label_tag}}
+    {% if form.anestesiologos.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.anestesiologos.help_text|safe }}"></i>
+    {% endif %}
+    {{form.anestesiologos}}
+    <div class="invalid-feedback">
+      {{form.anestesiologos.errors}}
+    </div>
+  </div>
+
+  <div class="col-md-2 mb-3">
+    {{form.anestesiologos_dispo.label_tag}}
+    {% if form.anestesiologos_dispo.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.anestesiologos_dispo.help_text|safe }}"></i>
+    {% endif %}
+    {{form.anestesiologos_dispo}}
+    <div class="invalid-feedback">
+      {{form.anestesiologos_dispo.errors}}
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-md-4 mb-3">
+    {{form.neumologos.label_tag}}
+    {% if form.neumologos.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.neumologos.help_text|safe }}"></i>
+    {% endif %}
+    {{form.neumologos}}
+    <div class="invalid-feedback">
+      {{form.neumologos.errors}}
+    </div>
+  </div>
+
+  <div class="col-md-2 mb-3">
+    {{form.neumologos_dispo.label_tag}}
+    {% if form.neumologos_dispo.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.neumologos_dispo.help_text|safe }}"></i>
+    {% endif %}
+    {{form.neumologos_dispo}}
+    <div class="invalid-feedback">
+      {{form.neumologos_dispo.errors}}
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4 mb-3">
+    {{form.cirujanos.label_tag}}
+    {% if form.cirujanos.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.cirujanos.help_text|safe }}"></i>
+    {% endif %}
+    {{form.cirujanos}}
+    <div class="invalid-feedback">
+      {{form.cirujanos.errors}}
+    </div>
+  </div>
+
+  <div class="col-md-2 mb-3">
+    {{form.cirujanos_dispo.label_tag}}
+    {% if form.cirujanos_dispo.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.cirujanos_dispo.help_text|safe }}"></i>
+    {% endif %}
+    {{form.cirujanos_dispo}}
+    <div class="invalid-feedback">
+      {{form.cirujanos_dispo.errors}}
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4 mb-3">
+    {{form.enfermeros.label_tag}}
+    {% if form.enfermeros.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.enfermeros.help_text|safe }}"></i>
+    {% endif %}
+    {{form.enfermeros}}
+    <div class="invalid-feedback">
+      {{form.enfermeros.errors}}
+    </div>
+  </div>
+
+  <div class="col-md-2 mb-3">
+    {{form.enfermeros_dispo.label_tag}}
+    {% if form.enfermeros_dispo.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.enfermeros_dispo.help_text|safe }}"></i>
+    {% endif %}
+    {{form.enfermeros_dispo}}
+    <div class="invalid-feedback">
+      {{form.enfermeros_dispo.errors}}
+    </div>
+  </div>
+</div>
+
+
+
+<div class="row">
+  <div class="col-md-4 mb-3">
+    {{form.tecnicos.label_tag}}
+    {% if form.tecnicos.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.tecnicos.help_text|safe }}"></i>
+    {% endif %}
+    {{form.tecnicos}}
+    <div class="invalid-feedback">
+      {{form.tecnicos.errors}}
+    </div>
+  </div>
+
+  <div class="col-md-2 mb-3">
+    {{form.tecnicos_dispo.label_tag}}
+    {% if form.tecnicos_dispo.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.tecnicos_dispo.help_text|safe }}"></i>
+    {% endif %}
+    {{form.tecnicos_dispo}}
+    <div class="invalid-feedback">
+      {{form.tecnicos_dispo.errors}}
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4 mb-3">
+    {{form.terapistas_resp.label_tag}}
+    {% if form.terapistas_resp.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.terapistas_resp.help_text|safe }}"></i>
+    {% endif %}
+    {{form.terapistas_resp}}
+    <div class="invalid-feedback">
+      {{form.terapistas_resp.errors}}
+    </div>
+  </div>
+
+  <div class="col-md-2 mb-3">
+    {{form.terapistas_resp_dispo.label_tag}}
+    {% if form.terapistas_resp_dispo.help_text %}
+    <i tabindex="-1" class="fas fa-info-circle ml-1" role="button" data-toggle="popover" data-trigger="focus"
+      title="Ayuda" data-content="{{ form.terapistas_resp_dispo.help_text|safe }}"></i>
+    {% endif %}
+    {{form.terapistas_resp_dispo}}
+    <div class="invalid-feedback">
+      {{form.terapistas_resp_dispo.errors}}
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-md-5 mb-3">
+    {{form.observaciones_rh.label_tag}}
+    {{form.observaciones_rh}}
+  </div>
+</div>

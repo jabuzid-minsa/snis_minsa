@@ -1,0 +1,53 @@
+{% extends 'facilities/base.html' %}
+
+
+
+{% block title %}
+    {% if create %}
+        Nuevo formulario
+    {% else %}
+        Actualizar formulario
+    {% endif %}
+{% endblock %}
+
+
+
+{% block body %}
+<div class="container">
+
+    <h1 class="mt-5">Formulario de Reporte</h1>
+
+    {%if user.role != "coordinador" and not user.is_superuser and approved %}
+        <div class="alert alert-warning" role="alert">
+            Este formulario ya ha sido aprobado. Si desea hacer modificaciones, por favor comunicarse con el administrador del sistema.
+        </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-12 order-md-1">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <form class="form-horizontal" novalidate action="" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {% include 'facilities/form-template.html' %}                        
+                        <div class="row mb-5 mt-3">   
+                            <div class="col-sm-10">
+                                {%if not approved or user.is_superuser %}
+                                    {% if create %}
+                                        <button type="submit" class="btn btn-success">Crear</button>
+                                    {% else %}
+                                        <button type="submit" class="btn btn-success">Actualizar</button>
+                                    {% endif %}
+                                
+                                {% endif %}
+                                <a class="btn btn-primary btn-rounded btn-sm ml-3 my-0" href="{% url 'facilities:uc-list'%}">Retornar al listado</a>
+                                
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

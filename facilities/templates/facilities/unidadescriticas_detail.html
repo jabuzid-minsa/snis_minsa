@@ -1,0 +1,626 @@
+{% extends 'facilities/base.html' %}
+
+{% block title %}
+    Detalles
+{% endblock %}
+
+
+{% block body %}
+
+<style>
+    .container .table .row>[class^=col-] {
+        padding-top: .75rem;
+        padding-bottom: .75rem;
+        background-color: rgba(86,61,124,.15);
+        border: 1px solid rgba(86,61,124,.2);
+    }
+</style>
+
+{%if user.role == "coordinador" or user.is_superuser %}
+    <script>
+        $(function () {
+            var url = "{% url 'facilities:approve_report' %}";
+            $("#approvedCheck").change(function () {
+
+                    $.ajax({                       
+                        url: url,
+                        data: {
+                        'id': {{ uc.id }}
+                        },
+                        success: function (data) {
+                            if($("#approvedCheck").is(':checked')){
+                                approvedCheck.disabled = true;
+                                location.reload()
+                                return false;
+                            }
+                            if (data['error']){
+                                $('#myModal').modal('show');
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown){
+                            $('#myModal').modal('show');
+                        }
+                    });
+            });
+        });
+    </script>
+{% endif %}
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Error</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            Ha habido un error en la aprobación.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+<div class="container">
+<h1 class="mt-5 mb-5">Detalles del Reporte</h1>
+
+{%if uc.aprobado and user.role == "default" %}
+    <div class="alert alert-warning" role="alert">
+        Este formulario ya ha sido aprobado. Si desea hacer modificaciones, por favor comunicarse con el administrador del sistema.
+    </div>
+{% endif %}
+
+{%if user.role == "coordinador" or user.is_superuser %}
+    <div class="alert alert-primary mb-5" role="alert">
+        <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="approvedCheck" {%if uc.aprobado %} disabled checked {% endif %} >
+        <label class="form-check-label" for="approvedCheck">Aprobar </label>
+    </div>
+    </div>
+{% endif %}
+
+<div class="row">
+    <div class="col-md-6 mb-2">
+    <label>Instalación:</label>
+      {{uc.instalacion}}
+    </div>
+
+    <div class="col-md-6 mb-2">
+        <label>Fecha de registro:</label>
+          {{uc.reg_date}}
+    </div>
+</div>
+
+
+<hr class="mb-1">
+<h4 class="mb-4">CAMAS</h4>
+
+
+
+<div class="container table">
+    <div class="row">
+      <div class="col-3 font-weight-bold">
+        1. Camas UCI
+      </div>
+      <div class="col-2">
+        {% if uc.camas_uci or uc.camas_uci >= 0 %}
+            {{uc.camas_uci}}
+        {% else %}
+            No reportado
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            2. Camas Semi Intensivos
+        </div>
+        <div class="col-2">
+            {% if uc.camas_semi or uc.camas_semi >= 0 %}
+            {{uc.camas_semi}}
+        {% else %}
+            No reportado
+        {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            3. Camas en sala
+        </div>
+        <div class="col-2">
+            {% if uc.camas_sala or uc.camas_sala >= 0 %}
+            {{uc.camas_sala}}
+            {% else %}
+            No reportado
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            4. Camas ocupadas por COVID-19
+        </div>
+        <div class="col-2">
+            {% if uc.camas_covid or uc.camas_covid >= 0 %}
+            {{uc.camas_covid}}
+            {% else %}
+            No reportado
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            5. Camas COVID-19 en sala
+        </div>
+        <div class="col-2">
+            {% if uc.camas_covid_sala or uc.camas_covid_sala >= 0 %}
+            {{uc.camas_covid_sala}}
+            {% else %}
+            No reportado
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            6. Camas otras causas
+        </div>
+        <div class="col-2">
+            {% if uc.camas_otro or uc.camas_otro >= 0 %}
+            {{uc.camas_otro}}
+            {% else %}
+            No reportado
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            7. Camas otras causas en sala
+        </div>
+        <div class="col-2">
+            {% if uc.camas_otro_sala or uc.camas_otro_sala >= 0 %}
+            {{uc.camas_otro_sala}}
+            {% else %}
+            No reportado
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+    <div class="container table">
+        <div class="row font-weight-bold">
+            <div class="col-3">
+            </div>
+            <div class="col-2">
+                Total en el hospital
+            </div>
+            <div class="col-2">
+                Transporte
+            </div>
+            <div class="col-2">
+                Fijo
+            </div>
+          </div>
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            8. Ventiladores disponibles
+        </div>
+        <div class="col-2">
+            {% if uc.vent_dispo or uc.vent_dispo >= 0 %}
+            {{uc.vent_dispo}}
+            {% else %}
+            No reportado
+            {% endif %}
+        </div>
+        <div class="col-2">
+            {% if uc.vent_dispo_trans or uc.vent_dispo_trans >= 0 %}
+            {{uc.vent_dispo_trans}}
+            {% else %}
+            No reportado
+            {% endif %}
+        </div>
+        <div class="col-2">
+            {% if uc.vent_dispo_fijo or uc.vent_dispo_fijo >= 0 %}
+            {{uc.vent_dispo_fijo}}
+            {% else %}
+            No reportado
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            9. Pacientes con COVID-19 con VMA en UCI
+        </div>
+        <div class="col-2">
+            {% if uc.pacientes_vma or uc.pacientes_vma >= 0 %}
+            {{uc.pacientes_vma}}
+            {% else %}
+            No reportado
+            {% endif %}
+        </div>
+        <div class="col-2">
+            {% if uc.pacientes_vma_trans or uc.pacientes_vma_trans >= 0 %}
+            {{uc.pacientes_vma_trans}}
+            {% else %}
+            No reportado
+            {% endif %}
+        </div>
+        <div class="col-2">
+            {% if uc.pacientes_vma_fijo or uc.pacientes_vma_fijo >= 0 %}
+            {{uc.pacientes_vma_fijo}}
+            {% else %}
+            No reportado
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            10. Pacientes con COVID-19 con VMA en Semi-intensivos
+        </div>
+        <div class="col-2">
+            {% if uc.pacientes_vma_semi or uc.pacientes_vma_semi >= 0 %}
+            {{uc.pacientes_vma_semi}}
+            {% else %}
+            No reportado
+            {% endif %}
+        </div>
+        <div class="col-2">
+            {% if uc.pacientes_vma_semi_trans or uc.pacientes_vma_semi_trans >= 0 %}
+            {{uc.pacientes_vma_semi_trans}}
+            {% else %}
+            No reportado
+            {% endif %}
+        </div>
+        <div class="col-2">
+            {% if uc.pacientes_vma_semi_fijo or uc.pacientes_vma_semi_fijo >= 0 %}
+            {{uc.pacientes_vma_semi_fijo}}
+            {% else %}
+            No reportado
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            11. Pacientes con COVID-19 con VMA en sala
+        </div>
+        <div class="col-2">
+            {% if uc.pacientes_vma_sala or uc.pacientes_vma_sala >= 0 %}
+            {{uc.pacientes_vma_sala}}
+            {% else %}
+            No reportado
+            {% endif %}
+        </div>
+        <div class="col-2">
+            {% if uc.pacientes_vma_sala_trans or uc.pacientes_vma_sala_trans >= 0 %}
+            {{uc.pacientes_vma_sala_trans}}
+            {% else %}
+            No reportado
+            {% endif %}
+        </div>
+        <div class="col-2">
+            {% if uc.pacientes_vma_sala_fijo or uc.pacientes_vma_sala_fijo >= 0 %}
+            {{uc.pacientes_vma_sala_fijo}}
+            {% else %}
+            No reportado
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            12. Ventiladores ocupados con otras patologías
+        </div>
+        <div class="col-2">
+            {% if uc.vent_otro or uc.vent_otro >= 0 %}
+            {{uc.vent_otro}}
+        {% else %}
+            No reportado
+        {% endif %}
+        </div>
+        <div class="col-2">
+            {% if uc.vent_otro_trans or uc.vent_otro_trans >= 0 %}
+            {{uc.vent_otro_trans}}
+        {% else %}
+            No reportado
+        {% endif %}
+        </div>
+        <div class="col-2">
+            {% if uc.vent_otro_fijo or uc.vent_otro_fijo >= 0 %}
+            {{uc.vent_otro_fijo}}
+        {% else %}
+            No reportado
+        {% endif %}
+        </div>
+    </div>
+</div>
+<div class="container table">
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            13. Pacientes con COVID-19 con intubacion
+        </div>
+        <div class="col-2">
+            {% if uc.pacientes_covid_int or uc.pacientes_covid_int >= 0 %}
+            {{uc.pacientes_covid_int}}
+        {% else %}
+            No reportado
+        {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            14. Pacientes con COVID-19 que fueron extubados
+        </div>
+        <div class="col-2">
+            {% if uc.pacientes_covid_ext or uc.pacientes_covid_ext >= 0 %}
+            {{uc.pacientes_covid_ext}}
+        {% else %}
+            No reportado
+        {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            15. Pacientes trasladados de UCI a sala
+        </div>
+        <div class="col-2">
+            {% if uc.pacientes_traslado or uc.pacientes_traslado >= 0 %}
+            {{uc.pacientes_traslado}}
+        {% else %}
+            No reportado
+        {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            16. Defunciones por COVID-19
+        </div>
+        <div class="col-2">
+            {% if uc.defunciones_covid or uc.defunciones_covid >= 0 %}
+            {{uc.defunciones_covid}}
+        {% else %}
+            No reportado
+        {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            17. Observaciones
+        </div>
+        <div class="col-4">
+            {% if uc.observaciones_camas %}
+            {{uc.observaciones_camas}}
+        {% else %}
+            No hay comentarios
+        {% endif %}
+        </div>
+    </div>
+</div>
+
+
+
+<hr class="mb-1">
+<h4 class="mb-4">RECURSOS HUMANOS</h4>
+
+
+
+<div class="container table">
+    <div class="row font-weight-bold">
+      <div class="col-3">
+      </div>
+      <div class="col-2">
+          Total en el hospital
+      </div>
+      <div class="col-2">
+          Disponibles
+      </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            18. Intensivistas
+        </div>
+        <div class="col-2">
+            {% if uc.intensivistas or uc.intensivistas >= 0 %}
+            {{uc.intensivistas}}
+        {% else %}
+        No reportado
+        {% endif %}
+        </div>
+        <div class="col-2">
+            {% if uc.intensivistas_dispo or uc.intensivistas_dispo >= 0 %}
+            {{uc.intensivistas_dispo}}
+        {% else %}
+        No reportado
+        {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            19. Internistas
+        </div>
+        <div class="col-2">
+            {% if uc.internistas or uc.internistas >= 0 %}
+            {{uc.internistas}}
+        {% else %}
+        No reportado
+        {% endif %}
+        </div>
+        <div class="col-2">
+            {% if uc.internistas_dispo or uc.internistas_dispo >= 0 %}
+            {{uc.internistas_dispo}}
+        {% else %}
+        No reportado
+        {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            20. Infectólogos
+        </div>
+        <div class="col-2">
+            {% if uc.infectologos or uc.infectologos >= 0 %}
+            {{uc.infectologos}}
+        {% else %}
+        No reportado
+        {% endif %}
+        </div>
+        <div class="col-2">
+            {% if uc.infectologos_dispo or uc.infectologos_dispo >= 0  %}
+            {{uc.infectologos_dispo}}
+        {% else %}
+        No reportado
+        {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            21. Anestesiólogos
+        </div>
+        <div class="col-2">
+            {% if uc.anestesiologos or uc.anestesiologos >= 0  %}
+            {{uc.anestesiologos}}
+        {% else %}
+        No reportado
+        {% endif %}
+        </div>
+        <div class="col-2">
+            {% if uc.anestesiologos_dispo or uc.anestesiologos_dispo >= 0 %}
+            {{uc.anestesiologos_dispo}}
+        {% else %}
+        No reportado
+        {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            22. Neumólogos
+        </div>
+        <div class="col-2">
+            {% if uc.neumologos or uc.neumologos >= 0 %}
+            {{uc.neumologos}}
+        {% else %}
+        No reportado
+        {% endif %}
+        </div>
+        <div class="col-2">
+            {% if uc.neumologos_dispo or uc.neumologos_dispo >= 0  %}
+            {{uc.neumologos_dispo}}
+        {% else %}
+        No reportado
+        {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            23. Cirujanos
+        </div>
+        <div class="col-2">
+            {% if uc.cirujanos or uc.cirujanos >= 0 %}
+            {{uc.cirujanos}}
+        {% else %}
+        No reportado
+        {% endif %}
+        </div>
+        <div class="col-2">
+            {% if uc.cirujanos_dispo or uc.cirujanos_dispo >= 0 %}
+            {{uc.cirujanos_dispo}}
+        {% else %}
+        No reportado
+        {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            24. Enfermeros
+        </div>
+        <div class="col-2">
+            {% if uc.enfermeros or uc.enfermeros >= 0 %}
+            {{uc.enfermeros}}
+        {% else %}
+        No reportado
+        {% endif %}
+        </div>
+        <div class="col-2">
+            {% if uc.enfermeros_dispo or uc.enfermeros_dispo >= 0 %}
+            {{uc.enfermeros_dispo}}
+        {% else %}
+        No reportado
+        {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            25. Técnicos/Auxiliares
+        </div>
+        <div class="col-2">
+            {% if uc.tecnicos or uc.tecnicos >= 0 %}
+            {{uc.tecnicos}}
+        {% else %}
+        No reportado
+        {% endif %}
+        </div>
+        <div class="col-2">
+            {% if uc.tecnicos_dispo or uc.tecnicos_dispo >= 0 %}
+            {{uc.tecnicos_dispo}}
+        {% else %}
+        No reportado
+        {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            26. Terapistas Respiratorios
+        </div>
+        <div class="col-2">
+            {% if uc.terapistas_resp or uc.terapistas_resp >= 0 %}
+            {{uc.terapistas_resp}}
+        {% else %}
+        No reportado
+        {% endif %}
+        </div>
+        <div class="col-2">
+            {% if uc.terapistas_resp_dispo or uc.terapistas_resp_dispo >= 0 %}
+            {{uc.terapistas_resp_dispo}}
+        {% else %}
+        No reportado
+        {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3 font-weight-bold">
+            27. Observaciones
+        </div>
+        <div class="col-4">
+            {% if uc.observaciones_rh %}
+            {{uc.observaciones_rh}}
+        {% else %}
+            No hay comentarios
+        {% endif %}
+        </div>
+    </div>
+</div>
+
+    <div>
+        <div class="col-md-6 mb-5 mt-4">
+
+        {%if not uc.aprobado or user.is_superuser %}
+            <a href="{% url 'facilities:uc-update' uc.id %}" class="btn btn btn-success btn-sm">Editar</a>
+        {% endif %}
+            <a class="btn btn-primary btn-rounded ml-3 btn-sm my-0" href="{% url 'facilities:uc-list'%}">Retornar al listado</a>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
